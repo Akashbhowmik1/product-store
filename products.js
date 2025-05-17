@@ -63,11 +63,16 @@ function renderProducts() {
     `;
     productList.appendChild(prodEl);
 
-    // Add to cart button handler
     prodEl.querySelector("button").addEventListener("click", () => {
       addToCart(product.id);
     });
   });
+}
+
+// --- Cart Function Placeholder ---
+function addToCart(productId) {
+  const product = products.find(p => p.id === productId);
+  alert(`Added "${product.name}" to cart!`);
 }
 
 // --- Event Listeners ---
@@ -80,6 +85,5 @@ clearFilterBtn.addEventListener("click", () => {
   renderProducts();
 });
 
-// --- Export for cart.js to use ---
-window.products = products;
-window.renderProducts = renderProducts;
+// --- Initial Render ---
+window.onload = renderProducts;
