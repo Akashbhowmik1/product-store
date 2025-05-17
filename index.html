@@ -4,12 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Smart Store</title>
+  
+  <!-- Load CSS files normally -->
   <link rel="stylesheet" href="style-layout.css" />
   <link rel="stylesheet" href="style-components.css" />
+
+  <!-- Load Google reCAPTCHA -->
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
   <style>
-    /* Initially hide products until captcha done */
-    #productList {
+    /* Initially hide main content until captcha is solved */
+    main, aside#cart, header {
       display: none;
     }
   </style>
@@ -30,21 +35,29 @@
     <h2>Your Cart</h2>
     <ul id="cartItems"></ul>
     <p>Total: $<span id="total">0</span></p>
-    <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" data-callback="onCaptchaSuccess"></div>
-    <button onclick="checkout()" disabled>Checkout</button>
-    <button onclick="clearCart()" disabled>Clear Cart</button>
+    <button onclick="checkout()">Checkout</button>
+    <button onclick="clearCart()">Clear Cart</button>
   </aside>
 
+  <!-- reCAPTCHA widget with callback -->
+  <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" data-callback="onCaptchaSuccess"></div>
+
   <script>
+    // This function runs after captcha is successfully solved
     function onCaptchaSuccess() {
-      document.querySelector('button[onclick="checkout()"]').disabled = false;
-      document.querySelector('button[onclick="clearCart()"]').disabled = false;
+      // Show main content and cart
+      document.querySelector('header').style.display = 'block';
+      document.querySelector('main').style.display = 'block';
+      document.querySelector('aside#cart').style.display = 'block';
+
+      // Hide captcha widget so it does not block UI
       document.querySelector('.g-recaptcha').style.display = 'none';
-      document.getElementById('productList').style.display = 'block';
     }
   </script>
 
+  <!-- Your scripts should load after content is visible -->
   <script src="products.js"></script>
   <script src="cart.js"></script>
+
 </body>
 </html>
