@@ -2,87 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>🛒 Online Store</title>
-
-  <!-- Preconnect & preload fonts for better performance -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter&display=swap"
-    rel="stylesheet"
-  />
-
   <link rel="stylesheet" href="style.css" />
   <script defer src="script.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <header>
-    <nav aria-label="Primary Navigation" class="nav-bar">
-      <a href="#" class="logo" aria-label="Online Store Home">🛒 Online Store</a>
-      <ul class="nav-links">
-        <li><a href="#products" class="nav-link">Products</a></li>
-        <li><a href="#cart" class="nav-link">Cart</a></li>
-        <li><a href="#about" class="nav-link">About</a></li>
-        <li><a href="#contact" class="nav-link">Contact</a></li>
-      </ul>
-      <button id="cart-toggle" aria-expanded="false" aria-controls="cart" aria-label="Toggle Cart">
-        🛍️ Cart
-      </button>
-    </nav>
-  </header>
+  <h1>🛒 Online Store</h1>
 
-  <main>
-    <!-- Products Section -->
-    <section id="products" aria-labelledby="products-heading" class="product-section">
-      <h2 id="products-heading">Products</h2>
-      <div
-        id="product-list"
-        class="product-list"
-        aria-live="polite"
-        aria-relevant="additions"
-        style="min-height: 200px;"
-      >
-        <!-- Products will be dynamically inserted here -->
-      </div>
-    </section>
+  <div class="controls">
+    <input type="search" id="search" placeholder="Search products..." />
+    <select id="category-filter">
+      <option value="all">All Categories</option>
+      <!-- Categories added dynamically -->
+    </select>
+    <select id="sort-by">
+      <option value="default">Sort by</option>
+      <option value="price-asc">Price: Low to High</option>
+      <option value="price-desc">Price: High to Low</option>
+      <option value="title-asc">Title: A to Z</option>
+      <option value="title-desc">Title: Z to A</option>
+    </select>
+  </div>
 
-    <!-- Cart Section -->
-    <aside id="cart" aria-labelledby="cart-heading" class="cart-section" hidden>
-      <h2 id="cart-heading">Shopping Cart</h2>
-      <div id="cart-items" class="cart-items" style="min-height: 100px;">
-        <!-- Cart items will be dynamically inserted here -->
-      </div>
-      <div id="total-price" class="total" aria-live="polite">Total: $0.00</div>
-      <button id="checkout-btn" disabled>Checkout</button>
-    </aside>
+  <div id="product-list" class="product-list"></div>
 
-    <!-- About Section -->
-    <section id="about" aria-labelledby="about-heading" class="about-section">
-      <h2 id="about-heading">About Us</h2>
-      <p>Welcome to our Online Store! We offer the best products at the best prices.</p>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" aria-labelledby="contact-heading" class="contact-section">
-      <h2 id="contact-heading">Contact Us</h2>
-      <form id="contact-form" aria-label="Contact Form">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required />
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required />
-
-        <label for="message">Message:</label>
-        <textarea id="message" name="message" rows="4" required></textarea>
-
-        <button type="submit">Send</button>
-      </form>
-    </section>
-  </main>
-
-  <footer>
-    <p>&copy; 2025 Online Store. All rights reserved.</p>
-  </footer>
+  <h2>Cart</h2>
+  <div id="cart" class="cart"></div>
+  <div class="cart-actions">
+    <button id="clear-cart">Clear Cart</button>
+    <button id="checkout">Checkout</button>
+  </div>
+  <div id="total-price" class="total">Total: $0.00</div>
 </body>
 </html>
