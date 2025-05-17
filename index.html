@@ -3,32 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Smart Store</title>
-  
-  <link rel="stylesheet" href="style-layout.css" />
-  <link rel="stylesheet" href="style-components.css" />
+  <title>Product Store</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header>
-    <h1>Smart Store</h1>
-    <input type="text" id="searchInput" placeholder="Search for products..." />
+    <h1>Gadget Store</h1>
   </header>
 
-  <div class="country"></div>
+  <section class="controls">
+    <input type="text" id="search-input" placeholder="Search products..." />
+    
+    <select id="sort-select">
+      <option value="">Sort By</option>
+      <option value="price-asc">Price: Low to High</option>
+      <option value="price-desc">Price: High to Low</option>
+    </select>
+
+    <input type="number" id="min-price" placeholder="Min Price" />
+    <input type="number" id="max-price" placeholder="Max Price" />
+    <button id="filter-price-btn">Filter</button>
+    <button id="clear-filter-btn">Clear</button>
+  </section>
 
   <main>
-    <div id="productList"></div>
+    <div id="product-list" class="product-grid"></div>
   </main>
 
-  <aside id="cart">
-    <h2>Your Cart</h2>
-    <ul id="cartItems"></ul>
-    <p>Total: $<span id="total">0</span></p>
-    <button onclick="checkout()">Checkout</button>
-    <button onclick="clearCart()">Clear Cart</button>
-  </aside>
-
-  <script src="products.js"></script>
-  <script src="cart.js"></script>
+  <script src="product.js"></script>
 </body>
 </html>
