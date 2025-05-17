@@ -9,20 +9,10 @@ const products = [
   { id: 7, name: "Action Camera", price: 320, image: "https://images.unsplash.com/photo-1502920514311-65e73d86f7a8?auto=format&fit=crop&w=400&q=80" },
   { id: 8, name: "E-reader", price: 140, image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80" },
   { id: 9, name: "Smartphone Gimbal", price: 200, image: "https://images.unsplash.com/photo-1506719040635-7e70d8a569c3?auto=format&fit=crop&w=400&q=80" },
-  { id: 10, name: "VR Headset", price: 400, image: "https://images.unsplash.com/photo-1556228724-b1f8aabf26ef?auto=format&fit=crop&w=400&q=80" },
-  { id: 11, name: "Gaming Mouse", price: 60, image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80" },
-  { id: 12, name: "Mechanical Keyboard", price: 110, image: "https://images.unsplash.com/photo-1502672023488-70e25813eb80?auto=format&fit=crop&w=400&q=80" },
-  { id: 13, name: "Laptop Stand", price: 45, image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80" },
-  { id: 14, name: "USB-C Hub", price: 35, image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=80" },
-  { id: 15, name: "Wireless Charger", price: 70, image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80" },
-  { id: 16, name: "Smart Light Bulb", price: 25, image: "https://images.unsplash.com/photo-1556228724-b1f8aabf26ef?auto=format&fit=crop&w=400&q=80" },
-  { id: 17, name: "Portable Projector", price: 350, image: "https://images.unsplash.com/photo-1502672023488-70e25813eb80?auto=format&fit=crop&w=400&q=80" },
-  { id: 18, name: "Wireless Earbuds Case", price: 20, image: "https://images.unsplash.com/photo-1516707579370-ef4e62f7b7e8?auto=format&fit=crop&w=400&q=80" },
-  { id: 19, name: "Electric Standing Desk", price: 300, image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=80" },
-  { id: 20, name: "Smart Door Lock", price: 200, image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80" }
+  { id: 10, name: "VR Headset", price: 400, image: "https://images.unsplash.com/photo-1556228724-b1f8aabf26ef?auto=format&fit=crop&w=400&q=80" }
 ];
 
-// --- Elements ---
+// --- DOM Elements ---
 const productList = document.getElementById("product-list");
 const searchInput = document.getElementById("search-input");
 const sortSelect = document.getElementById("sort-select");
@@ -30,6 +20,11 @@ const minPriceInput = document.getElementById("min-price");
 const maxPriceInput = document.getElementById("max-price");
 const filterPriceBtn = document.getElementById("filter-price-btn");
 const clearFilterBtn = document.getElementById("clear-filter-btn");
+const cartList = document.getElementById("cart-list");
+const cartTotal = document.getElementById("cart-total");
+
+// --- Cart Data ---
+const cart = [];
 
 // --- Render Products ---
 function renderProducts() {
@@ -69,10 +64,57 @@ function renderProducts() {
   });
 }
 
-// --- Cart Function Placeholder ---
+// --- Add to Cart ---
 function addToCart(productId) {
-  const product = products.find(p => p.id === productId);
-  alert(`Added "${product.name}" to cart!`);
+  const item = cart.find(c => c.id === productId);
+  if (item) {
+    item.qty++;
+  } else {
+    const product = products.find(p => p.id === productId);
+    cart.push({ ...product, qty: 1 });
+  }
+  renderCart();
+}
+
+// --- Remove from Cart ---
+function removeFromCart(productId) {
+  const index = cart.findIndex(c => c.id === productId);
+  if (index !== -1) {
+    cart.splice(index, 1);
+    renderCart();
+  }
+}
+
+// --- Change Quantity ---
+function changeQuantity(productId, change) {
+  const item = cart.find(c => c.id === productId);
+  if (item) {
+    item.qty += change;
+    if (item.qty <= 0) {
+      removeFromCart(productId);
+    }
+    renderCart();
+  }
+}
+
+// --- Render Cart ---
+function renderCart() {
+  cartList.innerHTML = "";
+  let total = 0;
+
+  cart.forEach(item => {
+    const itemEl = document.createElement("li");
+    itemEl.innerHTML = `
+      ${item.name} x ${item.qty} = $${(item.price * item.qty).toFixed(2)}
+      <button onclick="changeQuantity(${item.id}, 1)">+</button>
+      <button onclick="changeQuantity(${item.id}, -1)">-</button>
+      <button onclick="removeFromCart(${item.id})">Remove</button>
+    `;
+    cartList.appendChild(itemEl);
+    total += item.price * item.qty;
+  });
+
+  cartTotal.textContent = `Total: $${total.toFixed(2)}`;
 }
 
 // --- Event Listeners ---
@@ -87,3 +129,7 @@ clearFilterBtn.addEventListener("click", () => {
 
 // --- Initial Render ---
 window.onload = renderProducts;
+
+// --- Expose to global for onclick handlers ---
+window.changeQuantity = changeQuantity;
+window.removeFromCart = removeFromCart;
