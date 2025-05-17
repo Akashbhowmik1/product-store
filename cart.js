@@ -1,103 +1,47 @@
-// === Cart Data ===
-let cart = JSON.parse(localStorage.getItem("cart")) || {};
+let cart = [];
 
-// --- Elements ---
-const cartItemsContainer = document.getElementById("cart-items");
-const cartTotalEl = document.getElementById("cart-total");
-const cartCountEl = document.getElementById("cart-count");
-const toastEl = document.getElementById("toast");
-const clearCartBtn = document.getElementById("clear-cart-btn");
+function addToCart(productId) {
+  const product = products.find(p => p.id === productId);
+  if (!product) return;
 
-// --- Add to Cart ---
-function addToCart(id) {
-  if (cart[id]) {
-    cart[id].qty++;
+  const cartItem = cart.find(item => item.id === productId);
+  if (cartItem) {
+    cartItem.quantity++;
   } else {
-    const prod = products.find(p => p.id === id);
-    cart[id] = { ...prod, qty: 1 };
+    cart.push({ ...product, quantity: 1 });
   }
-  saveCart();
+
   renderCart();
-  showToast("Added to cart!");
 }
 
-// --- Remove from Cart ---
-function removeFromCart(id) {
-  if (cart[id]) {
-    cart[id].qty--;
-    if (cart[id].qty <= 0) delete cart[id];
-    saveCart();
-    renderCart();
-    showToast("Removed one item!");
-  }
-}
-
-// --- Clear Cart ---
-function clearCart() {
-  cart = {};
-  saveCart();
-  renderCart();
-  showToast("Cart cleared!");
-}
-
-// --- Save Cart to localStorage ---
-function saveCart() {
-  localStorage.setItem("cart", JSON.stringify(cart));
-}
-
-// --- Render Cart Items ---
 function renderCart() {
-  cartItemsContainer.innerHTML = "";
-  const items = Object.values(cart);
+  const cartItems = document.getElementById('cartItems');
+  const totalSpan = document.getElementById('total');
 
-  if (items.length === 0) {
-    cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
-    cartTotalEl.textContent = "";
-    cartCountEl.textContent = "0";
-    return;
-  }
+  cartItems.innerHTML = '';
+  let total = 0;
 
-  let totalQty = 0;
-  let totalPrice = 0;
+  cart.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = `${item.name} x${item.quantity} - $${item.price * item.quantity}`;
+    cartItems.appendChild(li);
 
-  items.forEach(item => {
-    totalQty += item.qty;
-    totalPrice += item.price * item.qty;
-
-    const itemEl = document.createElement("div");
-    itemEl.className = "cart-item";
-    itemEl.innerHTML = `
-      <span>${item.name} (x${item.qty})</span>
-      <span>
-        $${(item.price * item.qty).toFixed(2)}
-        <button title="Remove one" data-id="${item.id}">&times;</button>
-      </span>
-    `;
-    cartItemsContainer.appendChild(itemEl);
-
-    itemEl.querySelector("button").addEventListener("click", () => {
-      removeFromCart(item.id);
-    });
+    total += item.price * item.quantity;
   });
 
-  cartTotalEl.textContent = `Total: $${totalPrice.toFixed(2)}`;
-  cartCountEl.textContent = totalQty.toString();
+  totalSpan.textContent = total.toFixed(2);
 }
 
-// --- Toast ---
-function showToast(msg) {
-  toastEl.textContent = msg;
-  toastEl.style.opacity = "1";
-  setTimeout(() => {
-    toastEl.style.opacity = "0";
-  }, 2000);
+function clearCart() {
+  cart = [];
+  renderCart();
 }
 
-// --- Events ---
-clearCartBtn.addEventListener("click", () => {
-  if (confirm("Are you sure you want to clear the cart?")) clearCart();
-});
-
-// --- Init ---
-renderCart();
-renderProducts(); // from products.js
+function checkout() {
+  if (cart.length === 0) {
+    alert('Cart is empty!');
+    return;
+  }
+  alert(`Thank you for your purchase! Total: $${cart.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2)}`);
+  clearCart();
+}
