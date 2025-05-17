@@ -8,44 +8,53 @@
   <link rel="stylesheet" href="style-components.css" />
 
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-  <style>
-    /* Screen reader only class for accessibility */
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0,0,0,0);
-      border: 0;
-    }
-  </style>
 </head>
 <body>
   <header>
     <h1>Smart Store</h1>
-    <label for="searchInput" class="sr-only">Search Products</label>
     <input type="text" id="searchInput" placeholder="Search for products..." />
   </header>
 
   <div class="country"></div>
 
   <main>
-    <div id="product-list"></div>
+    <div id="productList"></div>
   </main>
 
   <aside id="cart">
     <h2>Your Cart</h2>
     <ul id="cartItems"></ul>
     <p>Total: $<span id="total">0</span></p>
-    <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
-    <button onclick="checkout()">Checkout</button>
-    <button onclick="clearCart()">Clear Cart</button>
+    
+    <!-- reCAPTCHA with callback -->
+    <div 
+      class="g-recaptcha" 
+      data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+      data-callback="onCaptchaSuccess"
+    ></div>
+
+    <!-- Buttons initially disabled -->
+    <button onclick="checkout()" disabled id="checkoutBtn">Checkout</button>
+    <button onclick="clearCart()" disabled id="clearCartBtn">Clear Cart</button>
   </aside>
 
-  <script src="products.js"></script>
-  <script src="cart.js"></script>
+<script src="products.js"></script>
+<script src="cart.js"></script>
+
+<script>
+  // This function runs after captcha is solved
+  function onCaptchaSuccess(token) {
+    // Enable buttons after captcha success
+    document.getElementById('checkoutBtn').disabled = false;
+    document.getElementById('clearCartBtn').disabled = false;
+
+    // Optionally hide the captcha widget
+    const captcha = document.querySelector('.g-recaptcha');
+    if (captcha) captcha.style.display = 'none';
+
+    console.log('Captcha solved, token:', token);
+  }
+</script>
 
 </body>
 </html>
