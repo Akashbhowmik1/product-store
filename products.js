@@ -63,6 +63,7 @@ function renderProducts() {
     `;
     productList.appendChild(prodEl);
 
+    // Add to cart button handler
     prodEl.querySelector("button").addEventListener("click", () => {
       addToCart(product.id);
     });
