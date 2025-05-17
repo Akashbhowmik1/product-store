@@ -4,19 +4,35 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Smart Store</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style-layout.css" />
+  <link rel="stylesheet" href="style-components.css" />
+
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <style>
+    /* Screen reader only class for accessibility */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      border: 0;
+    }
+  </style>
 </head>
 <body>
   <header>
     <h1>Smart Store</h1>
+    <label for="searchInput" class="sr-only">Search Products</label>
     <input type="text" id="searchInput" placeholder="Search for products..." />
   </header>
 
   <div class="country"></div>
 
   <main>
-    <div id="productList"></div>
+    <div id="product-list"></div>
   </main>
 
   <aside id="cart">
@@ -28,8 +44,8 @@
     <button onclick="clearCart()">Clear Cart</button>
   </aside>
 
-<script src="products.js"></script>
-<script src="cart.js"></script>
+  <script src="products.js"></script>
+  <script src="cart.js"></script>
 
 </body>
 </html>
