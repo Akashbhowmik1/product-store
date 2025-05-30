@@ -5,15 +5,14 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local StarterGui = game:GetService("StarterGui")
 
-local player = nil
+local player = Players.LocalPlayer
 local coins = nil
 local isRunning = false
 local gui = nil
 
--- Wait for player and coins
+-- Wait for leaderstats and Coins
 repeat wait()
-    player = Players.LocalPlayer
-until player and player:FindFirstChild("leaderstats") and player.leaderstats:FindFirstChild("Coins")
+until player:FindFirstChild("leaderstats") and player.leaderstats:FindFirstChild("Coins")
 
 coins = player.leaderstats.Coins
 
