@@ -1,5 +1,5 @@
--- Educational Script for Grow a Garden - Coins UI
--- For learning only. Violates Roblox ToS.
+-- 📚 Educational Script for Grow a Garden - Coins UI (Mobile Friendly)
+-- ⚠️ For learning only. Violates Roblox ToS.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -10,9 +10,8 @@ local coins = nil
 local isRunning = false
 local gui = nil
 
--- Wait until the player and coins are available
-repeat
-    wait()
+-- Wait for player and coins
+repeat wait()
     player = Players.LocalPlayer
 until player and player:FindFirstChild("leaderstats") and player.leaderstats:FindFirstChild("Coins")
 
@@ -38,38 +37,39 @@ local function addMoney(amount)
         end)
         return true
     else
-        notify("Error", "Money remote not found!")
+        notify("❌ Error", "No money remote found!")
         return false
     end
 end
 
--- Create simple UI in PlayerGui
+-- UI Creation
 local function createUI()
     if gui then gui:Destroy() end
 
     local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "CoinHackUI"
+    screenGui.Name = "MobileCoinUI"
     screenGui.ResetOnSpawn = false
     screenGui.Parent = player:WaitForChild("PlayerGui")
 
     local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0, 200, 0, 130)
-    frame.Position = UDim2.new(0.5, -100, 0.5, -65)
-    frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    frame.Size = UDim2.new(0, 220, 0, 140)
+    frame.Position = UDim2.new(0.5, -110, 0.5, -70)
+    frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    frame.BorderSizePixel = 0
     frame.Parent = screenGui
 
     local title = Instance.new("TextLabel")
     title.Size = UDim2.new(1, 0, 0, 30)
-    title.Text = "💰 Coin Hack"
+    title.Text = "💰 Coin Giver"
     title.TextColor3 = Color3.new(1, 1, 1)
     title.BackgroundTransparency = 1
     title.Font = Enum.Font.SourceSansBold
-    title.TextSize = 18
+    title.TextSize = 20
     title.Parent = frame
 
     local startBtn = Instance.new("TextButton")
-    startBtn.Size = UDim2.new(0, 80, 0, 40)
-    startBtn.Position = UDim2.new(0, 10, 0, 50)
+    startBtn.Size = UDim2.new(0, 90, 0, 40)
+    startBtn.Position = UDim2.new(0, 15, 0, 50)
     startBtn.Text = "▶ Start"
     startBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
     startBtn.TextColor3 = Color3.new(1, 1, 1)
@@ -78,8 +78,8 @@ local function createUI()
     startBtn.Parent = frame
 
     local stopBtn = Instance.new("TextButton")
-    stopBtn.Size = UDim2.new(0, 80, 0, 40)
-    stopBtn.Position = UDim2.new(0, 110, 0, 50)
+    stopBtn.Size = UDim2.new(0, 90, 0, 40)
+    stopBtn.Position = UDim2.new(0, 115, 0, 50)
     stopBtn.Text = "■ Stop"
     stopBtn.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
     stopBtn.TextColor3 = Color3.new(1, 1, 1)
@@ -87,11 +87,11 @@ local function createUI()
     stopBtn.TextSize = 16
     stopBtn.Parent = frame
 
-    -- Connect buttons
+    -- Button functionality
     startBtn.MouseButton1Click:Connect(function()
         if not isRunning then
             isRunning = true
-            notify("Started", "Money loop started")
+            notify("✅ Started", "Coin loop running...")
             spawn(function()
                 while isRunning do
                     local success = addMoney(1000)
@@ -107,10 +107,11 @@ local function createUI()
 
     stopBtn.MouseButton1Click:Connect(function()
         isRunning = false
-        notify("Stopped", "Money loop stopped")
+        notify("🛑 Stopped", "Coin loop stopped")
     end)
 
     gui = screenGui
 end
 
+-- Create the UI
 createUI()
