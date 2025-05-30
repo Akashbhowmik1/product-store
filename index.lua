@@ -1,109 +1,67 @@
--- ✅ FIXED Grow a Garden - Coin UI
--- ⚠️ Educational purpose only
+-- Load Rayfield UI
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local StarterGui = game:GetService("StarterGui")
+local Window = Rayfield:CreateWindow({
+    Name = "Rayfield Mobile UI",
+    LoadingTitle = "Rayfield Interface Suite",
+    LoadingSubtitle = "Mobile Version",
+    Theme = "DarkBlue",
+    ToggleUIKeybind = "", -- No keybind for mobile
+})
 
-local player = Players.LocalPlayer or Players:GetPlayers()[1]
-local coins = nil
-local isRunning = false
-local gui = nil
+local Tab = Window:CreateTab("Main", 4483362458)
+local Section = Tab:CreateSection("Auto Features")
 
--- ✅ Helper: Notify
-local function notify(title, text)
-    pcall(function()
-        StarterGui:SetCore("SendNotification", {
-            Title = title,
-            Text = text,
-            Duration = 3
-        })
-    end)
-end
+-- Auto-Farm Button
+Tab:CreateButton({
+    Name = "Auto Farm Money",
+    Callback = function()
+        local remote = nil
 
--- ✅ Add money via RemoteEvent
-local function addMoney(amount)
-    local remote = ReplicatedStorage:FindFirstChild("UpdateCoins") or ReplicatedStorage:FindFirstChild("AddCurrency")
-    if remote then
-        pcall(function()
-            remote:FireServer(amount)
-        end)
-        return true
-    else
-        warn("❌ RemoteEvent not found")
-        notify("❌ Error", "No money RemoteEvent found!")
-        return false
-    end
-end
-
--- ✅ Create the Coin UI
-local function createUI()
-    if gui then gui:Destroy() end
-
-    gui = Instance.new("ScreenGui")
-    gui.Name = "CoinUI"
-    gui.ResetOnSpawn = false
-    gui.Parent = player:WaitForChild("PlayerGui", 5) or player:FindFirstChildOfClass("PlayerGui")
-
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0, 220, 0, 140)
-    frame.Position = UDim2.new(0.5, -110, 0.5, -70)
-    frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    frame.BorderSizePixel = 0
-    frame.Parent = gui
-
-    local title = Instance.new("TextLabel")
-    title.Size = UDim2.new(1, 0, 0, 30)
-    title.Text = "💰 Coin Giver"
-    title.TextColor3 = Color3.new(1, 1, 1)
-    title.BackgroundTransparency = 1
-    title.Font = Enum.Font.SourceSansBold
-    title.TextSize = 20
-    title.Parent = frame
-
-    local startBtn = Instance.new("TextButton")
-    startBtn.Size = UDim2.new(0, 90, 0, 40)
-    startBtn.Position = UDim2.new(0, 15, 0, 50)
-    startBtn.Text = "▶ Start"
-    startBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
-    startBtn.TextColor3 = Color3.new(1, 1, 1)
-    startBtn.Font = Enum.Font.SourceSans
-    startBtn.TextSize = 16
-    startBtn.Parent = frame
-
-    local stopBtn = Instance.new("TextButton")
-    stopBtn.Size = UDim2.new(0, 90, 0, 40)
-    stopBtn.Position = UDim2.new(0, 115, 0, 50)
-    stopBtn.Text = "■ Stop"
-    stopBtn.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
-    stopBtn.TextColor3 = Color3.new(1, 1, 1)
-    stopBtn.Font = Enum.Font.SourceSans
-    stopBtn.TextSize = 16
-    stopBtn.Parent = frame
-
-    -- ✅ Button Events
-    startBtn.MouseButton1Click:Connect(function()
-        if not isRunning then
-            isRunning = true
-            notify("✅ Started", "Adding coins...")
-            spawn(function()
-                while isRunning do
-                    local success = addMoney(1000)
-                    if not success then
-                        isRunning = false
-                        break
-                    end
-                    wait(1)
-                end
-            end)
+        -- Try to find remote by name
+        for _, v in pairs(game:GetDescendants()) do
+            if v:IsA("RemoteEvent") and string.lower(v.Name):find("money") then
+                remote = v
+                break
+            end
         end
-    end)
 
-    stopBtn.MouseButton1Click:Connect(function()
-        isRunning = false
-        notify("🛑 Stopped", "Stopped coin loop")
-    end)
-end
+        if remote then
+            Rayfield:Notify({
+                Title = "Money Remote Found!",
+                Content = "Starting auto farm...",
+                Duration = 3,
+                Image = 4483362458,
+            })
 
--- ✅ Call UI
-createUI()
+            -- Auto-farm loop
+            while task.wait(1) do
+                pcall(function()
+                    remote:FireServer()
+                end)
+            end
+        else
+            Rayfield:Notify({
+                Title = "Remote Not Found",
+                Content = "No Money RemoteEvent found!",
+                Duration = 5,
+                Image = 4483362458,
+            })
+        end
+    end,
+})
+
+-- Optional: Manual Show Button (mobile toggle)
+local btn = Instance.new("TextButton")
+btn.Size = UDim2.new(0, 120, 0, 40)
+btn.Position = UDim2.new(0, 10, 0, 250)
+btn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+btn.TextColor3 = Color3.new(1, 1, 1)
+btn.Text = "Open UI"
+btn.Font = Enum.Font.GothamBold
+btn.TextSize = 18
+btn.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+
+btn.MouseButton1Click:Connect(function()
+    Rayfield:SetVisibility(true)
+end)
